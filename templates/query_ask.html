@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ask a question – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <a href="{{ url_for('junior') }}" class="nav-link">Junior zone</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-auth">
+        <div class="container auth-container">
+            <div class="glass-card form-card form-card-wide">
+                <h1 class="form-heading">Ask the community</h1>
+                <p class="form-lead">Seniors can see your question and share guidance.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('query_ask') }}" class="form">
+                    <label for="question">Your question</label>
+                    <textarea id="question" name="question" rows="6" required placeholder="e.g. How should I prepare for system design if I have 3 weeks?"></textarea>
+                    <button type="submit" class="btn btn-primary btn-block">Post question</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

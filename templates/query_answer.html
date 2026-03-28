@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Answer question – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <a href="{{ url_for('senior') }}" class="nav-link">Senior zone</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-auth main-upload">
+        <div class="container auth-container">
+            <div class="glass-card form-card form-card-wide">
+                <h1 class="form-heading">Answer a question</h1>
+                <p class="form-lead">Share practical advice—juniors will see this on the Junior zone.</p>
+
+                <div class="query-preview glass-inset">
+                    <p class="query-preview-meta">From <strong>{{ q.asker_name }}</strong> · {{ q.created_at }}</p>
+                    <p class="query-preview-text">{{ q.question }}</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('query_answer', query_id=q.id) }}" class="form">
+                    <label for="answer">Your answer</label>
+                    <textarea id="answer" name="answer" rows="8" required placeholder="Write your answer here…"></textarea>
+                    <button type="submit" class="btn btn-primary btn-block">Submit answer</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

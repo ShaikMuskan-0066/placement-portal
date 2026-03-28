@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ exp.senior_name or 'Experience' }} – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('junior') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <a href="{{ url_for('junior') }}" class="nav-link">← Back to Junior zone</a>
+                {% if logged_in %}
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-view-exp">
+        <div class="container view-exp-container">
+            <article class="glass-card view-exp-hero">
+                <p class="view-exp-eyebrow">Placement experience</p>
+                <h1 class="view-exp-name">{{ exp.senior_name if exp.senior_name else 'Anonymous' }}</h1>
+                <dl class="view-exp-meta">
+                    <div>
+                        <dt>Company</dt>
+                        <dd>{{ exp.company }}</dd>
+                    </div>
+                    <div>
+                        <dt>Pass-out year</dt>
+                        <dd>{% if exp.passout_year %}{{ exp.passout_year }}{% else %}—{% endif %}</dd>
+                    </div>
+                    <div>
+                        <dt>Role</dt>
+                        <dd>{{ exp.role }}</dd>
+                    </div>
+                </dl>
+            </article>
+
+            <div class="view-exp-sections">
+                {% if exp.questions %}
+                <section class="glass-card view-exp-block">
+                    <h2 class="view-exp-section-title">Interview questions</h2>
+                    <div class="view-exp-body">{{ exp.questions }}</div>
+                </section>
+                {% endif %}
+
+                {% if exp.prep %}
+                <section class="glass-card view-exp-block">
+                    <h2 class="view-exp-section-title">Preparation strategy</h2>
+                    <div class="view-exp-body">{{ exp.prep }}</div>
+                </section>
+                {% endif %}
+
+                {% if exp.courses %}
+                <section class="glass-card view-exp-block">
+                    <h2 class="view-exp-section-title">Courses / certifications</h2>
+                    <div class="view-exp-body">{{ exp.courses }}</div>
+                </section>
+                {% endif %}
+
+                {% if not exp.questions and not exp.prep and not exp.courses %}
+                <p class="empty-state empty-state--inline">No extra details were added for this entry.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('index') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Account">
+                <a href="{{ url_for('login') }}" class="btn btn-nav-primary">Log in</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-auth">
+        <div class="container auth-container">
+            <div class="glass-card form-card">
+                <h1 class="form-heading">Create your account</h1>
+                <p class="form-lead">Join PlaceMentor to share or explore placement journeys.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('signup') }}" class="form">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required />
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="new-password" required />
+
+                    <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+                </form>
+
+                <p class="form-footer">
+                    Already have an account?
+                    <a href="{{ url_for('login') }}">Log in</a>
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

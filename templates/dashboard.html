@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <span class="nav-user">Hi, {{ username }}</span>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-dashboard">
+        <div class="container dashboard-container">
+            <header class="dashboard-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Pick how you want to use PlaceMentor today.</p>
+            </header>
+
+            <div class="role-grid">
+                <a href="{{ url_for('senior') }}" class="role-card glass-card">
+                    <span class="role-icon" aria-hidden="true">↑</span>
+                    <h2 class="role-name">Senior</h2>
+                    <p class="role-desc">Upload experiences and answer junior questions.</p>
+                    <span class="role-cta">Open senior zone →</span>
+                </a>
+                <a href="{{ url_for('junior') }}" class="role-card glass-card">
+                    <span class="role-icon" aria-hidden="true">◉</span>
+                    <h2 class="role-name">Junior</h2>
+                    <p class="role-desc">Browse experiences and ask the community.</p>
+                    <span class="role-cta">View experiences →</span>
+                </a>
+            </div>
+
+            <section class="queries-section glass-card" aria-labelledby="dash-queries-heading">
+                <div class="queries-section-head">
+                    <h2 id="dash-queries-heading" class="queries-section-title">Community questions</h2>
+                    <p class="queries-section-desc">Latest from juniors—answer them in Senior zone.</p>
+                </div>
+                {% if recent_queries %}
+                <ul class="query-list query-list--compact">
+                    {% for q in recent_queries %}
+                    <li class="query-list-item">
+                        <span class="query-badge {% if q.answer and q.answer.strip() %}query-badge--answered{% else %}query-badge--open{% endif %}">
+                            {% if q.answer and q.answer.strip() %}Answered{% else %}Open{% endif %}
+                        </span>
+                        <p class="query-list-text">{{ q.question }}</p>
+                        <p class="query-list-meta">{{ q.asker_name }}{% if q.answer and q.answer.strip() %} · {{ q.answerer_name or 'Senior' }}{% endif %}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="queries-section-actions">
+                    <a href="{{ url_for('senior') }}" class="btn btn-ghost btn-sm">View all in Senior zone</a>
+                    <a href="{{ url_for('junior') }}" class="btn btn-ghost btn-sm">Junior zone</a>
+                </div>
+                {% else %}
+                <p class="empty-state empty-state--inline">No questions yet. Juniors can post from Junior zone.</p>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+</body>
+</html>

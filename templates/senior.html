@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Senior – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-dashboard">
+        <div class="container dashboard-container">
+            <header class="dashboard-header">
+                <h1 class="page-title">Senior zone</h1>
+                <p class="page-subtitle">Upload experiences and answer junior questions.</p>
+            </header>
+
+            <div class="senior-actions">
+                <a href="{{ url_for('upload') }}" class="btn btn-primary">Upload experience</a>
+            </div>
+
+            <section class="queries-panel senior-my-posts" aria-labelledby="senior-my-posts-heading">
+                <h2 id="senior-my-posts-heading" class="section-title-bar">Your experiences</h2>
+                <p class="queries-panel-lead">Entries below are loaded from the server for your account only.</p>
+
+                {% if my_experiences %}
+                <div class="senior-exp-grid" role="list">
+                    {% for exp in my_experiences %}
+                    <article class="glass-card senior-exp-card" role="listitem">
+                        <div class="senior-exp-card-accent" aria-hidden="true"></div>
+                        <dl class="senior-exp-fields">
+                            <div class="senior-exp-field senior-exp-field--wide">
+                                <dt>Name</dt>
+                                <dd>{{ exp.senior_name if exp.senior_name else '—' }}</dd>
+                            </div>
+                            <div class="senior-exp-field">
+                                <dt>Company</dt>
+                                <dd>{{ exp.company }}</dd>
+                            </div>
+                            <div class="senior-exp-field">
+                                <dt>Pass-out year</dt>
+                                <dd>{% if exp.passout_year %}{{ exp.passout_year }}{% else %}—{% endif %}</dd>
+                            </div>
+                            <div class="senior-exp-field senior-exp-field--wide">
+                                <dt>Role</dt>
+                                <dd>{{ exp.role }}</dd>
+                            </div>
+                        </dl>
+                        <div class="senior-exp-card-actions">
+                            <a href="/edit/{{ exp.id }}" class="btn btn-secondary btn-sm senior-exp-btn-edit">Edit</a>
+                            <form method="post" action="{{ url_for('delete_experience', id=exp.id) }}" class="senior-exp-delete-form" onsubmit="return confirm('Delete this experience permanently?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="empty-state empty-state--inline">No experiences yet. Use “Upload experience” to add one.</p>
+                {% endif %}
+            </section>
+
+            <section class="queries-panel" aria-labelledby="senior-queries-heading">
+                <h2 id="senior-queries-heading" class="section-title-bar">Junior questions</h2>
+                <p class="queries-panel-lead">Open questions are listed first. Answer to publish guidance for everyone.</p>
+
+                {% if queries %}
+                <ul class="query-cards">
+                    {% for q in queries %}
+                    <li class="glass-card query-card">
+                        <div class="query-card-top">
+                            <span class="query-badge {% if q.answer and q.answer.strip() %}query-badge--answered{% else %}query-badge--open{% endif %}">
+                                {% if q.answer and q.answer.strip() %}Answered{% else %}Open{% endif %}
+                            </span>
+                            <span class="query-card-date">{{ q.created_at }}</span>
+                        </div>
+                        <p class="query-card-question">{{ q.question }}</p>
+                        <p class="query-card-asker">Asked by <strong>{{ q.asker_name }}</strong></p>
+                        {% if q.answer and q.answer.strip() %}
+                        <div class="query-card-answer">
+                            <h3 class="query-answer-label">Answer</h3>
+                            <p class="query-answer-body">{{ q.answer }}</p>
+                            <p class="query-card-meta">By {{ q.answerer_name or 'Senior' }} {% if q.answered_at %}· {{ q.answered_at }}{% endif %}</p>
+                        </div>
+                        {% else %}
+                        <a href="{{ url_for('query_answer', query_id=q.id) }}" class="btn btn-primary btn-sm">Answer</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="empty-state">No questions yet. Juniors can post from Junior zone.</p>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Junior – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Main">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="nav-link">Log out</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-junior">
+        <div class="container junior-container">
+            <header class="dashboard-header">
+                <h1 class="page-title">Junior zone</h1>
+                <p class="page-subtitle">Explore experiences, then ask the community anything.</p>
+            </header>
+
+            <section class="queries-panel queries-panel--junior" aria-labelledby="junior-queries-heading">
+                <div class="queries-panel-row">
+                    <div>
+                        <h2 id="junior-queries-heading" class="section-title-bar">Q&amp;A</h2>
+                        <p class="queries-panel-lead">Questions from juniors and answers from seniors.</p>
+                    </div>
+                    <a href="{{ url_for('query_ask') }}" class="btn btn-primary">Ask a question</a>
+                </div>
+
+                {% if queries %}
+                <ul class="query-cards">
+                    {% for q in queries %}
+                    <li class="glass-card query-card">
+                        <div class="query-card-top">
+                            <span class="query-badge {% if q.answer and q.answer.strip() %}query-badge--answered{% else %}query-badge--open{% endif %}">
+                                {% if q.answer and q.answer.strip() %}Answered{% else %}Awaiting answer{% endif %}
+                            </span>
+                            <span class="query-card-date">{{ q.created_at }}</span>
+                        </div>
+                        <p class="query-card-question">{{ q.question }}</p>
+                        <p class="query-card-asker">Asked by <strong>{{ q.asker_name }}</strong></p>
+                        {% if q.answer and q.answer.strip() %}
+                        <div class="query-card-answer">
+                            <h3 class="query-answer-label">Answer</h3>
+                            <p class="query-answer-body">{{ q.answer }}</p>
+                            <p class="query-card-meta">By {{ q.answerer_name or 'Senior' }} {% if q.answered_at %}· {{ q.answered_at }}{% endif %}</p>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="empty-state">No questions yet. Be the first to ask.</p>
+                {% endif %}
+            </section>
+
+            <section class="chart-section glass-card" aria-labelledby="chart-heading">
+                <h2 id="chart-heading" class="section-title-bar">Experiences by company</h2>
+                <p class="queries-panel-lead chart-section-lead">How many placement write-ups exist for each company (from the database).</p>
+                {% if chart_data.labels and chart_data.counts %}
+                <div class="chart-wrap">
+                    <canvas id="experienceByCompanyChart" height="120"></canvas>
+                </div>
+                {% else %}
+                <p class="empty-state empty-state--inline">No experience data yet. Charts appear once seniors upload experiences.</p>
+                {% endif %}
+            </section>
+
+            <h2 class="section-title-bar section-title-bar--spaced">Placement experiences</h2>
+            <p class="page-subtitle junior-exp-lead">Preview cards—open one for full interview details, prep, and courses.</p>
+
+            {% if experiences %}
+            <div class="cards-grid cards-grid--previews">
+                {% for exp in experiences %}
+                <a href="{{ url_for('view_experience', experience_id=exp.id) }}" class="experience-preview-card glass-card">
+                    <div class="experience-preview-accent" aria-hidden="true"></div>
+                    <div class="experience-preview-inner">
+                        <p class="experience-preview-label">Senior</p>
+                        <h2 class="experience-preview-name">{{ exp.senior_name if exp.senior_name else 'Anonymous' }}</h2>
+                        <p class="experience-preview-company">{{ exp.company }}</p>
+                        <p class="experience-preview-year">
+                            <span class="experience-preview-year-label">Pass-out</span>
+                            <span class="experience-preview-year-value">{% if exp.passout_year %}{{ exp.passout_year }}{% else %}—{% endif %}</span>
+                        </p>
+                        <span class="experience-preview-cta">View full experience →</span>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="empty-state">No experiences shared yet. Check back soon.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    {% if chart_data.labels and chart_data.counts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            var payload = {{ chart_data | tojson }};
+            var ctx = document.getElementById("experienceByCompanyChart");
+            if (!ctx || !payload.labels.length) return;
+
+            var accent = "56, 189, 248";
+            var grid = "rgba(255, 255, 255, 0.08)";
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: payload.labels,
+                    datasets: [{
+                        label: "Experiences",
+                        data: payload.counts,
+                        backgroundColor: payload.labels.map(function (_, i) {
+                            var a = 0.45 + (i % 5) * 0.1;
+                            return "rgba(" + accent + ", " + a + ")";
+                        }),
+                        borderColor: "rgba(" + accent + ", 0.95)",
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        maxBarThickness: 48
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: "rgba(15, 23, 42, 0.92)",
+                            titleColor: "#f8fafc",
+                            bodyColor: "#e2e8f0",
+                            borderColor: "rgba(148, 163, 184, 0.35)",
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: grid },
+                            ticks: {
+                                color: "rgba(248, 250, 252, 0.65)",
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: "rgba(248, 250, 252, 0.65)"
+                            },
+                            grid: { color: grid }
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+    {% endif %}
+</body>
+</html>

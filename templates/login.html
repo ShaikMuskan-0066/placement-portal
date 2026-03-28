@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login – PlaceMentor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('index') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Account">
+                <a href="{{ url_for('login') }}" class="nav-link nav-link-active">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn btn-nav-primary">Sign up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-auth">
+        <div class="container auth-container">
+            <div class="glass-card form-card">
+                <h1 class="form-heading">Welcome back</h1>
+                <p class="form-lead">Sign in to open your dashboard.</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{{ url_for('login') }}" class="form">
+                    {% if request.args.get('next') %}
+                    <input type="hidden" name="next" value="{{ request.args.get('next') }}" />
+                    {% endif %}
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required />
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required />
+
+                    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                </form>
+
+                <p class="form-footer">
+                    New here?
+                    <a href="{{ url_for('signup') }}">Create an account</a>
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PlaceMentor – Smart Placement Guidance Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body class="gradient-bg saas-body">
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url_for('index') }}" class="navbar-brand">
+                <span class="navbar-logo">PM</span>
+                <span class="navbar-title">PlaceMentor</span>
+            </a>
+            <nav class="navbar-nav" aria-label="Account">
+                <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                <a href="{{ url_for('signup') }}" class="btn btn-nav-primary">Sign up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-landing">
+        <div class="container landing-container">
+            <section class="hero glass-card">
+                <p class="hero-eyebrow">Smart placement guidance</p>
+                <h1 class="hero-title">PlaceMentor</h1>
+                <p class="hero-tagline">Connect seniors and juniors—share real interview paths, prep strategies, and courses in one focused workspace.</p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary">Get started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-ghost">Log in</a>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
