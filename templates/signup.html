@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign up – PlaceMentor</title>
+    <title>Sign up – HireHub</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body class="gradient-bg saas-body">
@@ -12,8 +12,8 @@
     <header class="navbar">
         <div class="navbar-inner">
             <a href="{{ url_for('index') }}" class="navbar-brand">
-                <span class="navbar-logo">PM</span>
-                <span class="navbar-title">PlaceMentor</span>
+                <span class="navbar-logo">HH</span>
+                <span class="navbar-title">HireHub</span>
             </a>
             <nav class="navbar-nav" aria-label="Account">
                 <a href="{{ url_for('login') }}" class="btn btn-nav-primary">Log in</a>
@@ -25,7 +25,7 @@
         <div class="container auth-container">
             <div class="glass-card form-card">
                 <h1 class="form-heading">Create your account</h1>
-                <p class="form-lead">Join PlaceMentor to share or explore placement journeys.</p>
+                <p class="form-lead">Join HireHub to share or explore placement journeys.</p>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
