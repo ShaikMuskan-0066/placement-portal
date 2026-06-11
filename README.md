@@ -16,5 +16,6 @@ Open `http://127.0.0.1:10000` (or the port shown in the terminal).
 - **`PLACEMENTOR_SECRET`**: Flask session secret (required on Render; use a long random string in production).
 
 ## Deploy
+Live Demo: https://placement-portal-cg3f.onrender.com/
 
 See `requirements.txt`, `Procfile`, and Render environment variables for production deployment.
